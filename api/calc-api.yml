@@ -1,0 +1,174 @@
+openapi: '3.0.2'
+info:
+  title: Calculator
+  description: RESTful Calculator service.
+  version: '1.0'
+servers:
+- url: http://localhost:8080/v1
+  description: Local development server
+tags:
+- name: calculator
+  description: Calculator operations
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+paths:
+  /calculator:
+    get:
+      tags:
+      - calculator
+      summary: 'Get all Calculators.'
+      operationId: getAllCalculators
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculators'
+    post:
+      tags:
+      - calculator
+      summary: 'Create a new Calculator.'
+      operationId: createCalculator
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculator'
+      responses:
+        201:
+          description: 'Calculator created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculator'
+  /calculator/{id}:
+    get:
+      tags:
+      - calculator
+      summary: 'Get a Calculator by ID.'
+      operationId: getCalculatorByID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: 'ID of the desired Calculator resource.'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculator'
+        404:
+          description: Calculator not found. You must provide a valid ID.
+          content: {}
+    put:
+      tags:
+      - calculator
+      summary: 'Update a Calculator using a Calculation.'
+      operationId: doCalculationOnCalculatorWithID
+      description: 'Update a Calculator using a Calculation.'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: 'ID of the desired Calculator resource.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Calculation'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculator'
+        400:
+          description: Calculation is not valid.
+          content: {}
+        404:
+          description: Calculator not found. You must provide a valid ID.
+          content: {}
+    delete:
+      tags:
+      - calculator
+      summary: 'Delete a Calculator.'
+      operationId: deleteCalculator
+      description: 'Delete a Calculator given its ID.'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: 'ID of the desired Calculator resource.'
+      responses:
+        200:
+          description: OK
+          content: {}
+        404:
+          description: 'Calculator not found. You must provide a valid ID.'
+          content: {}
+components:
+  schemas:
+    Calculator:
+      type: object
+      properties:
+        id:
+          type: string
+        result:
+          type: number
+    Calculators:
+      type: array
+      items:
+        $ref: '#/components/schemas/Calculator'
+    OperationType:
+      description: |
+        Type of operation to perform on result that's in calculator.
+        * '+' - Add operand to result.
+        * '-' - Subtract operand from result.
+        * '*' - Multiply result by operand.
+        * '/' - Divide result by operand.
+        * '=' - Evaluate the built up expression.
+      type: string
+      enum:
+        - '+'
+        - '-'
+        - '*'
+        - '/'
+        - '='
+    Operation:
+      type: object
+      properties:
+        operationType:
+          $ref: '#/components/schemas/OperationType'
+        operand:
+          type: number
+    Calculation:
+      type: object
+      properties:
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Operation'
+  securitySchemes:
+    calculator_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://calcapi.calculator.ritmosoft.com/oauth/dialog
+          scopes:
+            write:calculators: modify calculators
+            read:calculators: read calculators
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
