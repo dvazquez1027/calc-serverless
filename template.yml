@@ -105,6 +105,9 @@ Resources:
             Method: PUT
             RestApiId:
               Ref: CalcApi
+            RequestModel:
+              Model: Operations
+              Required: true
         deleteCalculator:
           Type: Api
           Properties:
@@ -142,6 +145,10 @@ Resources:
             Method: POST
             RestApiId:
               Ref: CalcApi
+            RequestModel:
+              Model: Calculator
+              Required: true
+
   # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
 

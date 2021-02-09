@@ -155,7 +155,7 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Calculator"
-    OperationType:
+    Operator:
       description: |
         Type of operation to perform on result that's in calculator.
         * '+' - Add operand to result.
@@ -173,17 +173,14 @@ components:
     Operation:
       type: object
       properties:
-        operationType:
-          $ref: "#/components/schemas/OperationType"
+        operator:
+          $ref: "#/components/schemas/Operator"
         operand:
           type: number
-    Calculation:
-      type: object
-      properties:
-        operations:
-          type: array
-          items:
-            $ref: "#/components/schemas/Operation"
+    Operations:
+      type: array
+      items:
+        $ref: "#/components/schemas/Operation"
 #  securitySchemes:
 #    calculator_auth:
 #      type: oauth2
