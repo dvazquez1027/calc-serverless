@@ -2,10 +2,10 @@
 const dynamodb = require('aws-sdk/clients/dynamodb');
 
 // Import all functions from get-by-id.js
-const lambda = require('../../../src/handlers/get-by-id.js');
+const lambda = require('../../../src/handlers/get-calculator-by-id.js');
 
 // This includes all tests for getByIdHandler
-describe('Test getByIdHandler', () => {
+describe('Test getCalculatorByIdHandler', () => {
     let getSpy;
 
     // One-time setup and teardown, see more in https://jestjs.io/docs/en/setup-teardown
@@ -37,7 +37,7 @@ describe('Test getByIdHandler', () => {
         };
 
         // Invoke getByIdHandler
-        const result = await lambda.getByIdHandler(event);
+        const result = await lambda.getCalculatorByIdHandler(event);
 
         const expectedResult = {
             statusCode: 200,

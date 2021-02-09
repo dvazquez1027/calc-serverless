@@ -2,10 +2,10 @@
 const dynamodb = require('aws-sdk/clients/dynamodb');
 
 // Import all functions from get-all-items.js
-const lambda = require('../../../src/handlers/get-all-items.js');
+const lambda = require('../../../src/handlers/get-all-calculators.js');
 
 // This includes all tests for getAllItemsHandler
-describe('Test getAllItemsHandler', () => {
+describe('Test getAllCalculatorsHandler', () => {
     let scanSpy;
 
     // One-time setup and teardown, see more in https://jestjs.io/docs/en/setup-teardown
@@ -34,7 +34,7 @@ describe('Test getAllItemsHandler', () => {
         };
 
         // Invoke getAllItemsHandler
-        const result = await lambda.getAllItemsHandler(event);
+        const result = await lambda.getAllCalculatorsHandler(event);
 
         const expectedResult = {
             statusCode: 200,

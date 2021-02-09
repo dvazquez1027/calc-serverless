@@ -2,10 +2,10 @@
 const dynamodb = require('aws-sdk/clients/dynamodb');
 
 // Import all functions from put-item.js
-const lambda = require('../../../src/handlers/put-item.js');
+const lambda = require('../../../src/handlers/create-calculator.js');
 
 // This includes all tests for putItemHandler
-describe('Test putItemHandler', () => {
+describe('Test createCalculatorHandler', () => {
     let putSpy;
 
     // One-time setup and teardown, see more in https://jestjs.io/docs/en/setup-teardown
@@ -33,7 +33,7 @@ describe('Test putItemHandler', () => {
         };
 
         // Invoke putItemHandler()
-        const result = await lambda.putItemHandler(event);
+        const result = await lambda.createCalculatorHandler(event);
         const expectedResult = {
             statusCode: 200,
             body: event.body,
