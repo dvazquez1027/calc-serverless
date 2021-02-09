@@ -63,7 +63,7 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /calculator
             Method: GET
             RestApiId:
               Ref: CalcApi
@@ -76,7 +76,7 @@ Resources:
     Properties:
       CodeUri: ./
       Handler: src/handlers/get-calculator-by-id.getCalculatorByIdHandler
-      Runtime: nodejs10.x
+      Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 60
       Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
@@ -89,13 +89,28 @@ Resources:
           # Make table name accessible as environment variable from function code during execution
           CALCULATORS_TABLE: !Ref Calculators
       Events:
-        Api:
+        getCalculatorById:
           Type: Api
           Properties:
-            Path: /{id}
+            Path: /calculator/{id}
             Method: GET
             RestApiId:
               Ref: CalcApi
+        doCalculationOnCalculatorWithId:
+          Type: Api
+          Properties:
+            Path: /calculator/{id}
+            Method: PUT
+            RestApiId:
+              Ref: CalcApi
+        deleteCalculator:
+          Type: Api
+          Properties:
+            Path: /calculator/{id}
+            Method: DELETE
+            RestApiId:
+              Ref: CalcApi
+        
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
@@ -121,7 +136,7 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /calculator
             Method: POST
             RestApiId:
               Ref: CalcApi
@@ -136,5 +151,5 @@ Resources:
         Name: id
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
