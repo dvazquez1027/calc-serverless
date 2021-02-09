@@ -1,23 +1,23 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: Calculator
   description: RESTful Calculator service.
-  version: '1.0'
+  version: "1.0"
 servers:
-- url: http://localhost:8080/v1
-  description: Local development server
+  - url: http://localhost:8080/v1
+    description: Local development server
 tags:
-- name: calculator
-  description: Calculator operations
-  externalDocs:
-    description: Find out more about our store
-    url: http://swagger.io
+  - name: calculator
+    description: Calculator operations
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
 paths:
   /calculator:
     get:
       tags:
-      - calculator
-      summary: 'Get all Calculators.'
+        - calculator
+      summary: "Get all Calculators."
       operationId: getAllCalculators
       responses:
         200:
@@ -25,29 +25,39 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calculators'
+                $ref: "#/components/schemas/Calculators"
+      x-amazon-apigateway-integration:
+        httpMethod: post
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
     post:
       tags:
-      - calculator
-      summary: 'Create a new Calculator.'
+        - calculator
+      summary: "Create a new Calculator."
       operationId: createCalculator
       requestBody:
         content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Calculator'
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Calculator"
       responses:
         201:
-          description: 'Calculator created'
+          description: "Calculator created"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calculator'
+                $ref: "#/components/schemas/Calculator"
+      x-amazon-apigateway-integration:
+        httpMethod: post
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
   /calculator/{id}:
     get:
       tags:
-      - calculator
-      summary: 'Get a Calculator by ID.'
+        - calculator
+      summary: "Get a Calculator by ID."
       operationId: getCalculatorByID
       parameters:
         - in: path
@@ -55,68 +65,83 @@ paths:
           schema:
             type: string
           required: true
-          description: 'ID of the desired Calculator resource.'
+          description: "ID of the desired Calculator resource."
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calculator'
+                $ref: "#/components/schemas/Calculator"
         404:
           description: Calculator not found. You must provide a valid ID.
           content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: post
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
     put:
       tags:
-      - calculator
-      summary: 'Update a Calculator using a Calculation.'
+        - calculator
+      summary: "Update a Calculator using a Calculation."
       operationId: doCalculationOnCalculatorWithID
-      description: 'Update a Calculator using a Calculation.'
+      description: "Update a Calculator using a Calculation."
       parameters:
         - in: path
           name: id
           schema:
             type: string
           required: true
-          description: 'ID of the desired Calculator resource.'
+          description: "ID of the desired Calculator resource."
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Calculation'
+              $ref: "#/components/schemas/Calculation"
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calculator'
+                $ref: "#/components/schemas/Calculator"
         400:
           description: Calculation is not valid.
           content: {}
         404:
           description: Calculator not found. You must provide a valid ID.
           content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: post
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
     delete:
       tags:
-      - calculator
-      summary: 'Delete a Calculator.'
+        - calculator
+      summary: "Delete a Calculator."
       operationId: deleteCalculator
-      description: 'Delete a Calculator given its ID.'
+      description: "Delete a Calculator given its ID."
       parameters:
         - in: path
           name: id
           schema:
             type: string
           required: true
-          description: 'ID of the desired Calculator resource.'
+          description: "ID of the desired Calculator resource."
       responses:
         200:
           description: OK
           content: {}
         404:
-          description: 'Calculator not found. You must provide a valid ID.'
+          description: "Calculator not found. You must provide a valid ID."
           content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: post
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
 components:
   schemas:
     Calculator:
@@ -129,7 +154,7 @@ components:
     Calculators:
       type: array
       items:
-        $ref: '#/components/schemas/Calculator'
+        $ref: "#/components/schemas/Calculator"
     OperationType:
       description: |
         Type of operation to perform on result that's in calculator.
@@ -140,16 +165,16 @@ components:
         * '=' - Evaluate the built up expression.
       type: string
       enum:
-        - '+'
-        - '-'
-        - '*'
-        - '/'
-        - '='
+        - "+"
+        - "-"
+        - "*"
+        - "/"
+        - "="
     Operation:
       type: object
       properties:
         operationType:
-          $ref: '#/components/schemas/OperationType'
+          $ref: "#/components/schemas/OperationType"
         operand:
           type: number
     Calculation:
@@ -158,7 +183,7 @@ components:
         operations:
           type: array
           items:
-            $ref: '#/components/schemas/Operation'
+            $ref: "#/components/schemas/Operation"
 #  securitySchemes:
 #    calculator_auth:
 #      type: oauth2
@@ -168,7 +193,7 @@ components:
 #          scopes:
 #            write:calculators: modify calculators
 #            read:calculators: read calculators
- #   api_key:
- #     type: apiKey
+#   api_key:
+#     type: apiKey
 #      name: api_key
- #     in: header
+#     in: header
