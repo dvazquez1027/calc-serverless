@@ -32,44 +32,46 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   CalcApi:
-    Type: AWS::Serverless::HttpApi
+    Type: AWS::Serverless::Api
     Properties:
       DefinitionUri: ./api/calc-api.yml
       Description: "Calculator Service API"
 
   # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  getAllCalculators:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: src/handlers/get-all-items.getAllItemsHandler
-      Runtime: nodejs10.x
+      Handler: src/handlers/get-all-calculators.getAllCalculatorsHandler
+      Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 60
-      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Description: Get all calculators from the Calculators table.
       Policies:
         # Give Create/Read/Update/Delete Permissions to the Calculator
         - DynamoDBCrudPolicy:
-            TableName: !Ref Calculator
+            TableName: !Ref Calculators
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref Calculator
+          CALCULATORS_TABLE: !Ref Calculators
       Events:
         Api:
           Type: Api
           Properties:
             Path: /
             Method: GET
+            RestApiId:
+              Ref: CalcApi
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
+  getCalculatorById:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: src/handlers/get-by-id.getByIdHandler
+      Handler: src/handlers/get-calculator-by-id.getCalculatorByIdHandler
       Runtime: nodejs10.x
       MemorySize: 128
       Timeout: 60
@@ -77,49 +79,53 @@ Resources:
       Policies:
         # Give Create/Read/Update/Delete Permissions to the Calculator
         - DynamoDBCrudPolicy:
-            TableName: !Ref Calculator
+            TableName: !Ref Calculators
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref Calculator
+          CALCULATORS_TABLE: !Ref Calculators
       Events:
         Api:
           Type: Api
           Properties:
             Path: /{id}
             Method: GET
+            RestApiId:
+              Ref: CalcApi
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
+  createCalculator:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: src/handlers/put-item.putItemHandler
-      Runtime: nodejs10.x
+      Handler: src/handlers/create-calculator.createCalculatorHandler
+      Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 60
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Description: Creates a calculator in the Calculators table.
       Policies:
         # Give Create/Read/Update/Delete Permissions to the Calculator
         - DynamoDBCrudPolicy:
-            TableName: !Ref Calculator
+            TableName: !Ref Calculators
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref Calculator
+          CALCULATORS_TABLE: !Ref Calculators
       Events:
         Api:
           Type: Api
           Properties:
             Path: /
             Method: POST
+            RestApiId:
+              Ref: CalcApi
   # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  Calculator:
+  Calculators:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:

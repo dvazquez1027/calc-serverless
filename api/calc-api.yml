@@ -159,16 +159,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Operation'
-  securitySchemes:
-    calculator_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: http://calcapi.calculator.ritmosoft.com/oauth/dialog
-          scopes:
-            write:calculators: modify calculators
-            read:calculators: read calculators
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+#  securitySchemes:
+#    calculator_auth:
+#      type: oauth2
+#      flows:
+#        implicit:
+#          authorizationUrl: http://calcapi.calculator.ritmosoft.com/oauth/dialog
+#          scopes:
+#            write:calculators: modify calculators
+#            read:calculators: read calculators
+ #   api_key:
+ #     type: apiKey
+#      name: api_key
+ #     in: header

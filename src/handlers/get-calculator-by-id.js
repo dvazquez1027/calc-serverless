@@ -6,12 +6,12 @@ const dynamodb = require('aws-sdk/clients/dynamodb');
 const docClient = new dynamodb.DocumentClient();
 
 // Get the DynamoDB table name from environment variables
-const tableName = process.env.SAMPLE_TABLE;
+const tableName = process.env.CALCULATORS_TABLE;
 
 /**
  * A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
  */
-exports.getByIdHandler = async (event) => {
+exports.getCalculatorByIdHandler = async (event) => {
     const { httpMethod, path, pathParameters } = event;
     if (httpMethod !== 'GET') {
         throw new Error(`getMethod only accept GET method, you tried: ${httpMethod}`);

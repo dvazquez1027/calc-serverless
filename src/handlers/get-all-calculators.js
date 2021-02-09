@@ -6,15 +6,15 @@ const dynamodb = require('aws-sdk/clients/dynamodb');
 const docClient = new dynamodb.DocumentClient();
 
 // Get the DynamoDB table name from environment variables
-const tableName = process.env.SAMPLE_TABLE;
+const tableName = process.env.CALCULATORS_TABLE;
 
 /**
  * A simple example includes a HTTP get method to get all items from a DynamoDB table.
  */
-exports.getAllItemsHandler = async (event) => {
+exports.getAllCalculatorsHandler = async (event) => {
     const { httpMethod, path } = event;
     if (httpMethod !== 'GET') {
-        throw new Error(`getAllItems only accept GET method, you tried: ${httpMethod}`);
+        throw new Error(`getAllCalculators only accept GET method, you tried: ${httpMethod}`);
     }
     // All log statements are written to CloudWatch by default. For more information, see
     // https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-logging.html
