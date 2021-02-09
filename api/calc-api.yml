@@ -30,7 +30,7 @@ paths:
         httpMethod: post
         type: aws_proxy
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getAllCalculators.Arn}/invocations
     post:
       tags:
         - calculator
@@ -52,7 +52,7 @@ paths:
         httpMethod: post
         type: aws_proxy
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${createCalculator.Arn}/invocations
   /calculator/{id}:
     get:
       tags:
@@ -80,7 +80,7 @@ paths:
         httpMethod: post
         type: aws_proxy
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getCalculatorById.Arn}/invocations
     put:
       tags:
         - calculator
@@ -116,7 +116,7 @@ paths:
         httpMethod: post
         type: aws_proxy
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getCalculatorById.Arn}/invocations
     delete:
       tags:
         - calculator
@@ -141,7 +141,7 @@ paths:
         httpMethod: post
         type: aws_proxy
         uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getCalculatorById.Arn}/invocations
 components:
   schemas:
     Calculator:
