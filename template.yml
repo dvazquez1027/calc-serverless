@@ -40,6 +40,8 @@ Resources:
             Location: s3://calc-serverless-api/calc-api.yml
       Description: "Calculator Service API"
       StageName: dev
+      EndpointConfiguration:
+        Type: REGIONAL
 
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllCalculators:
