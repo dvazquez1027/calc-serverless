@@ -107,6 +107,10 @@ Resources:
         Variables:
           # Make table name accessible as environment variable from function code during execution
           CALCULATORS_TABLE: !Ref Calculators
+          # MAKE ache accessible to function.
+          CALCULATORS_CACHE_HOST: !GetAtt CalculatorsCache.ConfigurationEndpoint.Address
+          CALCULATORS_CACHE_PORT: !GetAtt CalculatorsCache.ConfigurationEndpoint.Port
+
       Events:
         getCalculatorById:
           Type: Api

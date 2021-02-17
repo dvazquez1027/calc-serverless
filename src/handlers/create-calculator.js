@@ -2,11 +2,16 @@
 
 // Create a DocumentClient that represents the query to add an item
 const dynamodb = require('aws-sdk/clients/dynamodb');
+const memcached = required('memcached');
 
 const docClient = new dynamodb.DocumentClient();
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.CALCULATORS_TABLE;
+
+const cacheHost = process.env.CALCULATORS_CACHE_HOST;
+const cachePort = process.env.CALCULATORS_CACHE_PORT;
+const cacheClient = new memcached(cacheHost + ':' + cachePort);
 
 /**
  * A simple example includes a HTTP post method to add one item to a DynamoDB table.
@@ -30,6 +35,8 @@ exports.createCalculatorHandler = async (event) => {
         Item: { id, result },
     };
     await docClient.put(params).promise();
+
+    await cacheClient.set(id, { result: result, stack: [] }, 3600).promise();
 
     const response = {
         statusCode: 200,
