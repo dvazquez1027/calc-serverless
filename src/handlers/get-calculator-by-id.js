@@ -2,7 +2,7 @@
 
 // Create a DocumentClient that represents the query to get an item
 const dynamodb = require('aws-sdk/clients/dynamodb');
-const memcached = required('memcached');
+const memcached = require('memcached');
 
 const docClient = new dynamodb.DocumentClient();
 

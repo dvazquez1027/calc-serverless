@@ -5,7 +5,8 @@
     "private": true,
     "dependencies": {
         "aws-sdk": "^2.437.0",
-        "memcached": "^2.2.2"
+        "memcached": "^2.2.2",
+        "memcached-promise": "^1.0.1"
     },
     "devDependencies": {
         "jest": "^24.7.1"

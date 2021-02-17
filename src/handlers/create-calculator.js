@@ -2,7 +2,7 @@
 
 // Create a DocumentClient that represents the query to add an item
 const dynamodb = require('aws-sdk/clients/dynamodb');
-const memcached = required('memcached');
+const memcached = require('memcached-promise');
 
 const docClient = new dynamodb.DocumentClient();
 
@@ -36,10 +36,10 @@ exports.createCalculatorHandler = async (event) => {
     };
     await docClient.put(params).promise();
 
-    await cacheClient.set(id, { result: result, stack: [] }, 3600).promise();
+    await cacheClient.set(id, { result: result, stack: [] }, 3600);
 
     const response = {
-        statusCode: 200,
+        statusCode: 201,
         body,
     };
 
