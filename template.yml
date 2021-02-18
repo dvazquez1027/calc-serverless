@@ -44,7 +44,7 @@ Resources:
         'Fn::Transform':
           Name: AWS::Include
           Parameters:
-            Location: s3://calc-serverless-api/calc-api.yml
+            Location: ./api/calc-api.yml
       Description: "Calculator Service API"
       StageName: dev
       EndpointConfiguration:
@@ -71,6 +71,7 @@ Resources:
           - subnet-c07ecaa6
       Environment:
         Variables:
+          DYNAMODB_ENDPOINT: ''
           # Make table name accessible as environment variable from function code during execution
           CALCULATORS_TABLE: !Ref Calculators
           # Make cache accessible to function.
@@ -108,6 +109,7 @@ Resources:
           - subnet-c07ecaa6
       Environment:
         Variables:
+          DYNAMODB_ENDPOINT: ''
           # Make table name accessible as environment variable from function code during execution
           CALCULATORS_TABLE: !Ref Calculators
           # Make cache accessible to function.
@@ -163,6 +165,7 @@ Resources:
           - subnet-c07ecaa6
       Environment:
         Variables:
+          DYNAMODB_ENDPOINT: ''
           # Make table name accessible as environment variable from function code during execution
           CALCULATORS_TABLE: !Ref Calculators
           # Make cache accessible to function.

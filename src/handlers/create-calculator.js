@@ -1,10 +1,16 @@
 // Create clients and set shared const values outside of the handler
 
 // Create a DocumentClient that represents the query to add an item
+const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
 const memcached = require('memcached-promise');
 
-const docClient = new dynamodb.DocumentClient();
+const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
+const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
+                                                ? {
+                                                     endpoint: new AWS.Endpoint(dynamodbEndpoint)
+                                                  }
+                                                : null);
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.CALCULATORS_TABLE;
@@ -35,7 +41,6 @@ exports.createCalculatorHandler = async (event) => {
         Item: { id, result },
     };
     await docClient.put(params).promise();
-
     await cacheClient.set(id, { result: result, stack: [] }, 3600);
 
     const response = {

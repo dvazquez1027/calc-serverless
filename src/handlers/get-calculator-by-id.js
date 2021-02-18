@@ -1,10 +1,16 @@
 // Create clients and set shared const values outside of the handler
 
 // Create a DocumentClient that represents the query to get an item
+const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
-const memcached = require('memcached');
+const memcached = require('memcached-promise');
 
-const docClient = new dynamodb.DocumentClient();
+const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
+const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
+                                                ? {
+                                                     endpoint: new AWS.Endpoint(dynamodbEndpoint)
+                                                  }
+                                                : null);
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.CALCULATORS_TABLE;
@@ -30,23 +36,114 @@ exports.getCalculatorByIdHandler = async (event) => {
 
     // Get the item from the table
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#get-property
-    const params = {
+    let params = {
         TableName: tableName,
         Key: { id },
     };
     const { Item } = await docClient.get(params).promise();
 
-    if (httpMethod == 'PUT') {
-        ;// do the calculation and store the results.
+    let response;
+    if (httpMethod == 'GET') {
+        response = {
+            statusCode: 200,
+            body: JSON.stringify(Item),
+        };
+    } else if (httpMethod == 'PUT') {
+        let brain = await cacheClient.get(Item.id);
+        let operations = JSON.parse(body);
+        doCalculations(operations, brain);
+        let item = {
+            id: Item.id,
+            result: brain.result
+        };
+        params = {
+            TableName: tableName,
+            Item: item
+        }
+        await docClient.put(params).promise();
+        await cacheClient.set(item.id, brain);
+        response = {
+            statusCode: 200,
+            body: JSON.stringify(item)
+        }
     } else if (httpMethod == 'DELETE') {
         await docClient.delete(params).promise();
+        response = {
+            statusCode: 200
+        };
     }
-
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify(Item),
-    };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);
     return response;
 };
+
+function doCalculations(operations, brain) {
+    for (let operation in operations) {
+        doCalculation(operations[operation], brain);
+    }
+}
+
+function doCalculation(operation, brain) {
+    let workingOp = { operator: operation.operator, operand: operation.operand };
+    if (brain.stack.length >= 0) {
+        brain.lastOperation = brain.stack[brain.stack.length-1];
+        while (brain.stack.length > 0 &&
+               precedenceOf(operation.operator) <= precedenceOf(brain.stack[brain.stack.length-1].operator)) {
+            let op = brain.stack.pop();
+            workingOp.operand = operate(op.operator, op.operand, workingOp.operand);
+        }
+    } else if (brain.lastOperation !== undefined && operation.operator == '=') {
+        workingOp.operand = operate(lastOperation.operator, brain.result, lastOperation.operand);
+    }
+
+    if (operation.operator !== '=') {
+        brain.stack.push(workingOp);
+    }
+
+    brain.result = workingOp.operand;
+}
+
+function precedenceOf(operator) {
+    switch (operator) {
+        case '-':
+        case '+':
+            return 1;
+
+        case '/':
+        case '*':
+            return 2;
+
+        case '=':
+            return 0;
+
+        default:
+            return -1;
+    }
+}
+
+function operate(operator, left, right) {
+    let result;
+    switch (operator) {
+        case '+':
+            result = left + right;
+            break;
+
+        case '-':
+            result = left - right;
+            break;
+
+        case '*':
+            result = left * right;
+            break;
+
+        case '/':
+            result = left / right;
+            break;
+
+        default:
+            result = left;
+            break;
+    }
+
+    return result;
+}

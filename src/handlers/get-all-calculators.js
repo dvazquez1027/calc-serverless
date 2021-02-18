@@ -1,9 +1,15 @@
 // Create clients and set shared const values outside of the handler
 
 // Create a DocumentClient that represents the query to get all items
+const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
 
-const docClient = new dynamodb.DocumentClient();
+const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
+const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
+                                                ? {
+                                                     endpoint: new AWS.Endpoint(dynamodbEndpoint)
+                                                  }
+                                                : null);
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.CALCULATORS_TABLE;

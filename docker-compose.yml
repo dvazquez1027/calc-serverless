@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    hostname: dynamodb
+    ports:
+      - 8000:8000
+    networks:
+      calc-serverless:
+        aliases:
+          - dynamodb
+    command: ["-jar", "DynamoDBLocal.jar"]
+
+  memcached:
+    image: memcached
+    hostname: memcached
+    ports:
+      - 11211:11211
+    networks:
+      calc-serverless:
+        aliases:
+          - memcached
+
+networks:
+  calc-serverless:
