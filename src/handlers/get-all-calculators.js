@@ -3,9 +3,10 @@
 // Create a DocumentClient that represents the query to get all items
 const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
+const _ = require('lodash');
 
 const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
-const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
+const docClient = new dynamodb.DocumentClient(!_.isEmpty(dynamodbEndpoint)
                                                 ? {
                                                      endpoint: new AWS.Endpoint(dynamodbEndpoint)
                                                   }

@@ -4,9 +4,10 @@
 const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
 const memcached = require('memcached-promise');
+const _ = require('lodash');
 
 const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
-const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
+const docClient = new dynamodb.DocumentClient(!_.isEmpty(dynamodbEndpoint)
                                                 ? {
                                                      endpoint: new AWS.Endpoint(dynamodbEndpoint)
                                                   }
@@ -34,29 +35,33 @@ exports.getCalculatorByIdHandler = async (event) => {
     // Get id from pathParameters from APIGateway because of `/{id}` at template.yml
     const { id } = pathParameters;
 
-    // Get the item from the table
-    // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#get-property
-    let params = {
-        TableName: tableName,
-        Key: { id },
-    };
-    const { Item } = await docClient.get(params).promise();
-
     let response;
     if (httpMethod == 'GET') {
-        response = {
-            statusCode: 200,
-            body: JSON.stringify(Item),
+        let params = {
+            TableName: tableName,
+            Key: { id },
         };
+        const { Item } = await docClient.get(params).promise();
+        if (!_.isEmpty(Item)) {
+            response = {
+                statusCode: 200,
+                body: JSON.stringify(Item),
+            };
+        } else {
+            response = {
+                statusCode: 404,
+                body: 'Calculator with id=' + id + ' does not exist.'
+            }
+        }
     } else if (httpMethod == 'PUT') {
-        let brain = await cacheClient.get(Item.id);
+        let brain = await cacheClient.get(id);
         let operations = JSON.parse(body);
         doCalculations(operations, brain);
         let item = {
-            id: Item.id,
+            id: id,
             result: brain.result
         };
-        params = {
+        let params = {
             TableName: tableName,
             Item: item
         }
@@ -67,6 +72,10 @@ exports.getCalculatorByIdHandler = async (event) => {
             body: JSON.stringify(item)
         }
     } else if (httpMethod == 'DELETE') {
+        let params = {
+            TableName: tableName,
+            Key: { id },
+        };
         await docClient.delete(params).promise();
         response = {
             statusCode: 200

@@ -245,3 +245,20 @@ Resources:
     Properties:
       RouteTableId: !Ref CalculatorSubnetRouteTable
       SubnetId: !Ref CalculatorSubnet
+
+  CalculatorVPCDynomoDBEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action:
+              - 'dynamodb:*'
+            Resource:
+              - !Ref Calculators
+      RouteTableIds:
+        - !Ref CalculatorSubnetRouteTable
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.dynamodb'
+      VpcId: vpc-79fb3b04
