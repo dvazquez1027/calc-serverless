@@ -257,7 +257,7 @@ Resources:
             Action:
               - 'dynamodb:*'
             Resource:
-              - !Ref Calculators
+              - !GetAtt Calculators.Arn
       RouteTableIds:
         - !Ref CalculatorSubnetRouteTable
       ServiceName: !Sub 'com.amazonaws.${AWS::Region}.dynamodb'
