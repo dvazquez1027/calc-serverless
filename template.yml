@@ -233,4 +233,5 @@ Resources:
     Properties:
       AvailabilityZone: us-east-1a
       VpcId: vpc-79fb3b04
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: 172.31.96.0/20
+
