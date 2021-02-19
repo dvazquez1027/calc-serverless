@@ -9,8 +9,10 @@ const _ = require('lodash');
 const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
 var docClient;
 if (!_.isEmpty(dynamodbEndpoint)) {
+    console.log("dynamodbEndpoint is not empty");
     docClient = new dynamodb.DocumentClient({ endpoint: new AWS.Endpoint(dynamodbEndpoint)});
 } else {
+    console.log("dynamodbEndpoint is empty");
     docClient = new dynamodb.DocumentClient();
 }
 
