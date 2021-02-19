@@ -68,7 +68,7 @@ Resources:
         SecurityGroupIds:
           - !Ref CalcFunctionSecurityGroup
         SubnetIds:
-          - !Ref CalculatorSubnet
+          - subnet-c07ecaa6
       Environment:
         Variables:
           DYNAMODB_ENDPOINT: ''
@@ -106,7 +106,7 @@ Resources:
         SecurityGroupIds:
           - !Ref CalcFunctionSecurityGroup
         SubnetIds:
-          - !Ref CalculatorSubnet
+          - subnet-c07ecaa6
       Environment:
         Variables:
           DYNAMODB_ENDPOINT: ''
@@ -162,7 +162,7 @@ Resources:
         SecurityGroupIds:
           - !Ref CalcFunctionSecurityGroup
         SubnetIds:
-          - !Ref CalculatorSubnet
+          - subnet-c07ecaa6
       Environment:
         Variables:
           DYNAMODB_ENDPOINT: ''
@@ -226,7 +226,7 @@ Resources:
     Properties:
       Description: "Calculator Cache subnet group"
       SubnetIds:
-        - !Ref CalculatorSubnet
+        - subnet-c07ecaa6
 
   CalculatorSubnet:
     Type: AWS::EC2::Subnet
@@ -235,3 +235,13 @@ Resources:
       VpcId: vpc-79fb3b04
       CidrBlock: 172.31.96.0/20
 
+  CalculatorSubnetRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+     VpcId: vpc-79fb3b04
+
+  CaculatorSubnet1RouteAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref CalculatorSubnetRouteTable
+      SubnetId: !Ref CalculatorSubnet
