@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "aws-sdk": "^2.437.0",
+        "lodash": "^4.17.20",
         "memcached": "^2.2.2",
         "memcached-promise": "^1.0.1"
     },

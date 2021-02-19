@@ -4,13 +4,15 @@
 const AWS = require('aws-sdk');
 const dynamodb = require('aws-sdk/clients/dynamodb');
 const memcached = require('memcached-promise');
+const _ = require('lodash');
 
 const dynamodbEndpoint = process.env.DYNAMODB_ENDPOINT;
-const docClient = new dynamodb.DocumentClient(dynamodbEndpoint
-                                                ? {
-                                                     endpoint: new AWS.Endpoint(dynamodbEndpoint)
-                                                  }
-                                                : null);
+var docClient;
+if (!_.isEmpty(dynamodbEndpoint)) {
+    docClient = new dynamodb.DocumentClient({ endpoint: new AWS.Endpoint(dynamodbEndpoint)});
+} else {
+    docClient = new dynamodb.DocumentClient();
+}
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.CALCULATORS_TABLE;
@@ -40,8 +42,15 @@ exports.createCalculatorHandler = async (event) => {
         TableName: tableName,
         Item: { id, result },
     };
+    console.log('Writing to DynamoDB:', JSON.stringify(params));
     await docClient.put(params).promise();
-    await cacheClient.set(id, { result: result, stack: [] }, 3600);
+
+    const cacheItem = {
+        result: result,
+        stack: []
+    };
+    console.log('Writing to Cache:', JSON.stringify(cacheItem));
+    await cacheClient.set(id, cacheItem, 3600);
 
     const response = {
         statusCode: 201,
