@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "calc-serverless:createCalculator",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "template.yml",
+                "logicalId": "createCalculator"
+            },
+            "lambda": {
+                "payload": {
+                    "json": {
+                        "httpMethod": "POST",
+                        "body": "{\"id\":\"1\",\"result\":5.0}"
+                    }
+                },
+                "environmentVariables": {
+                    "DYNAMODB_ENDPOINT": "http://dynamodb:8000/",
+                    "CALCULATORS_TABLE": "Calculators",
+                    "CALCULATORS_CACHE_HOST": "memcached",
+                    "CALCULATORS_CACHE_PORT": "11211"
+                }
+            },
+            "sam": {
+                "containerBuild": true,
+                "dockerNetwork": "calc-serverless_calc-serverless"
+            },
+            "aws": {
+                "credentials": "profile:local",
+                "region": "us-east-1"
+            }
+        }
+    ]
+}
