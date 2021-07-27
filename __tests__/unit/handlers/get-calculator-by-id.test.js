@@ -14,7 +14,8 @@ describe('Test getCalculatorByIdHandler', () => {
     let cacheSetSpy;
 
     let db = {
-        '1': { id: '1', result: 0.0}
+        '1': { id: '1', result: 0.0},
+        '2': { id: '2', result: 0.0}
     };
 
     let cache = {
@@ -97,6 +98,26 @@ describe('Test getCalculatorByIdHandler', () => {
 
         // then
         const expectedItem = { id: '1', result: 10 };
+        const expectedResult = {
+            statusCode: 200,
+            body: JSON.stringify(expectedItem),
+        };
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('should add cache miss', async () => {
+        // when
+        const event = {
+            httpMethod: 'PUT',
+            pathParameters: {
+                id: '2'
+            },
+            body: '[{ "operator": "+", "operand": 5}, { "operator": "=", "operand": 5 }]'
+        }
+        const result = await lambda.getCalculatorByIdHandler(event);
+
+        // then
+        const expectedItem = { id: '2', result: 10 };
         const expectedResult = {
             statusCode: 200,
             body: JSON.stringify(expectedItem),

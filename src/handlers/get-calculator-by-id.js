@@ -35,51 +35,57 @@ exports.getCalculatorByIdHandler = async (event) => {
     // Get id from pathParameters from APIGateway because of `/{id}` at template.yml
     const { id } = pathParameters;
 
+    let params = {
+        TableName: tableName,
+        Key: { id },
+    };
+    const { Item } = await docClient.get(params).promise();
     let response;
-    if (httpMethod == 'GET') {
-        let params = {
-            TableName: tableName,
-            Key: { id },
-        };
-        const { Item } = await docClient.get(params).promise();
-        if (!_.isEmpty(Item)) {
+    if (_.isEmpty(Item)) {
+        response = {
+            statusCode: 404,
+            body: 'Calculator with id=' + id + ' does not exist.'
+        }
+    } else {
+        if (httpMethod === 'GET') {
             response = {
                 statusCode: 200,
                 body: JSON.stringify(Item),
             };
-        } else {
-            response = {
-                statusCode: 404,
-                body: 'Calculator with id=' + id + ' does not exist.'
+        } else if (httpMethod === 'PUT') {
+            let brain = await cacheClient.get(id);
+            if (brain == null) {
+                brain = {
+                    result: Item.result,
+                    stack: []
+                };
             }
+            let operations = JSON.parse(body);
+            doCalculations(operations, brain);
+            let item = {
+                id: id,
+                result: brain.result
+            };
+            let params = {
+                TableName: tableName,
+                Item: item
+            }
+            await docClient.put(params).promise();
+            await cacheClient.set(item.id, brain);
+            response = {
+                statusCode: 200,
+                body: JSON.stringify(item)
+            }
+        } else if (httpMethod === 'DELETE') {
+            let params = {
+                TableName: tableName,
+                Key: { id },
+            };
+            await docClient.delete(params).promise();
+            response = {
+                statusCode: 200
+            };
         }
-    } else if (httpMethod == 'PUT') {
-        let brain = await cacheClient.get(id);
-        let operations = JSON.parse(body);
-        doCalculations(operations, brain);
-        let item = {
-            id: id,
-            result: brain.result
-        };
-        let params = {
-            TableName: tableName,
-            Item: item
-        }
-        await docClient.put(params).promise();
-        await cacheClient.set(item.id, brain);
-        response = {
-            statusCode: 200,
-            body: JSON.stringify(item)
-        }
-    } else if (httpMethod == 'DELETE') {
-        let params = {
-            TableName: tableName,
-            Key: { id },
-        };
-        await docClient.delete(params).promise();
-        response = {
-            statusCode: 200
-        };
     }
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);
