@@ -1,0 +1,17 @@
+version=0.1
+[default.global.parameters]
+stack_name = "calc-serverless"
+
+[default.deploy.parameters]
+app_id = "calc-serverless"
+s3_bucket = "calc-serverless"
+s3_prefix = "calc-serverless"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = ["CAPABILITY_AUTO_EXPAND","CAPABILITY_IAM","CAPABILITY_NAMED_IAM"]
+tags = "project=\"calc-serverless\" stage=\"production\""
+parameter_overrides = "AppId=\"calc-serverless\" AppResourceArns=\"arn:aws:lambda:us-east-1:655584797556:function:calc-serverless-getAllCalculators*,arn:aws:lambda:us-east-1:655584797556:function:calc-serverless-getCalculatorById*,arn:aws:lambda:us-east-1:655584797556:function:calc-serverless-createCalculator*,arn:aws:dynamodb:us-east-1:655584797556:table/calc-serverless-Calculators*\""
+
+[default.build.parameters]
+container_env_var = ["Function1.GITHUB_TOKEN=TOKEN1", "Function2.GITHUB_TOKEN=TOKEN2"]
+container_env_var_file = "env.json"

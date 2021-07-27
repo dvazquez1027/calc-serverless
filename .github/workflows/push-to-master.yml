@@ -1,0 +1,40 @@
+name: Push to master
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  BuildAndDeploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 12.x
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup NodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup AWS SAM CLI
+        uses: aws-actions/setup-sam@v1
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2          
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests
+        run: |
+          npm run test
+          rm -rf ./__tests__
+          npm prune --pruduction
+      - name: Build
+        run: sam build --use-container
+      - name: Deploy
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
