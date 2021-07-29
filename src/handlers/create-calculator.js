@@ -53,7 +53,7 @@ exports.createCalculatorHandler = async (event) => {
 
     const response = {
         statusCode: 201,
-        body,
+        body     
     };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);

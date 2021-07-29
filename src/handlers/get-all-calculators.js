@@ -35,7 +35,7 @@ exports.getAllCalculatorsHandler = async (event) => {
 
     const response = {
         statusCode: 200,
-        body: JSON.stringify(Items),
+        body: JSON.stringify(Items)
     };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);

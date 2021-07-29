@@ -40,18 +40,15 @@ exports.getCalculatorByIdHandler = async (event) => {
         Key: { id },
     };
     const { Item } = await docClient.get(params).promise();
-    let response;
+    let response, responseStatusCode, responseBody;
+
     if (_.isEmpty(Item)) {
-        response = {
-            statusCode: 404,
-            body: 'Calculator with id=' + id + ' does not exist.'
-        }
+        responseStatusCode = 404;
+        responseBody = 'Calculator with id=' + id + ' does not exist.';
     } else {
         if (httpMethod === 'GET') {
-            response = {
-                statusCode: 200,
-                body: JSON.stringify(Item),
-            };
+            responseStatusCode = 200;
+            responseBody = JSON.stringify(Item);
         } else if (httpMethod === 'PUT') {
             let brain = await cacheClient.get(id);
             if (brain == null) {
@@ -72,21 +69,22 @@ exports.getCalculatorByIdHandler = async (event) => {
             }
             await docClient.put(params).promise();
             await cacheClient.set(item.id, brain);
-            response = {
-                statusCode: 200,
-                body: JSON.stringify(item)
-            }
+            responseStatusCode = 200;
+            responseBody = JSON.stringify(item);
         } else if (httpMethod === 'DELETE') {
             let params = {
                 TableName: tableName,
                 Key: { id },
             };
             await docClient.delete(params).promise();
-            response = {
-                statusCode: 200
-            };
+            responseStatusCode = 200;
         }
     }
+
+    response = {
+        statusCode: responseStatusCode,
+        body: responseBody
+    };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);
     return response;

@@ -1,19 +1,5 @@
 version: "3.8"
 services:
-  calc-serverless:
-    image: calc-serverless
-    hostname: calc-serverless
-    build:
-      context: .
-    ports:
-      - 3000:3000
-    volumes: 
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      calc-serverless:
-        aliases:
-          - calc-serverless
-
   dynamodb:
     image: amazon/dynamodb-local
     hostname: dynamodb
