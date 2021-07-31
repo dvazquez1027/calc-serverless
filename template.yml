@@ -90,7 +90,7 @@ Resources:
       EndpointConfiguration:
         Type: REGIONAL
       Cors:
-        AlowMethods: "'POST, GET, PUT, UPDATE, DELETE'"
+        AllowMethods: "'POST, GET, PUT, UPDATE, DELETE'"
         AllowOrigin: "'*'"
 
   # This is a Lambda function config associated with the source code: get-all-items.js
