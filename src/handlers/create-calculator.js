@@ -35,11 +35,17 @@ exports.createCalculatorHandler = async (event) => {
     // Get id and name from the body of the request
     const { id, result } = JSON.parse(body);
 
+    let idCreate = null;
+    if (id != null) {
+        idCreate = id;
+    } else {
+        idCreate = _.uniqueId();
+    }
     // Creates a new item, or replaces an old item with a new item
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property
     const params = {
         TableName: tableName,
-        Item: { id, result },
+        Item: { id: idCreate, result: result },
     };
     console.log('Writing to DynamoDB:', JSON.stringify(params));
     await docClient.put(params).promise();
@@ -49,11 +55,22 @@ exports.createCalculatorHandler = async (event) => {
         stack: []
     };
     console.log('Writing to Cache:', JSON.stringify(brain));
-    await cacheClient.set(id, brain, 3600);
+    await cacheClient.set(idCreate, brain, 3600);
+
+    const responseBody = {
+        id: idCreate,
+        result: body.result
+    };
 
     const response = {
         statusCode: 201,
-        body     
+        body: responseBody,
+        headers: {
+            "Access-Control-Allow-Credentials": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "content-type"
+        } 
     };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);

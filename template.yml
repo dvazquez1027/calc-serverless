@@ -92,6 +92,8 @@ Resources:
       Cors:
         AllowMethods: "'POST, GET, PUT, UPDATE, DELETE'"
         AllowOrigin: "'*'"
+        AllowHeaders: "'content-type'"
+        AllowCredentials: "'*'"
 
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllCalculators:

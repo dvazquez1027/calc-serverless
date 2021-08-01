@@ -83,7 +83,13 @@ exports.getCalculatorByIdHandler = async (event) => {
 
     response = {
         statusCode: responseStatusCode,
-        body: responseBody
+        body: responseBody,
+        headers: {
+            "Access-Control-Allow-Credentials": "*",
+            "Access-Control-Allow-Methods": "GET, PUT, DELETE",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "content-type"
+        } 
     };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);
