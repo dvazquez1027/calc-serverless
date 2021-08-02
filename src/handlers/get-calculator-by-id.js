@@ -48,7 +48,7 @@ exports.getCalculatorByIdHandler = async (event) => {
     } else {
         if (httpMethod === 'GET') {
             responseStatusCode = 200;
-            responseBody = JSON.stringify(Item);
+            responseBody = Item;
         } else if (httpMethod === 'PUT') {
             let brain = await cacheClient.get(id);
             if (brain == null) {
@@ -70,7 +70,7 @@ exports.getCalculatorByIdHandler = async (event) => {
             await docClient.put(params).promise();
             await cacheClient.set(item.id, brain);
             responseStatusCode = 200;
-            responseBody = JSON.stringify(item);
+            responseBody = item;
         } else if (httpMethod === 'DELETE') {
             let params = {
                 TableName: tableName,
@@ -83,7 +83,7 @@ exports.getCalculatorByIdHandler = async (event) => {
 
     response = {
         statusCode: responseStatusCode,
-        body: responseBody,
+        body: JSON.stringify(responseBody),
         headers: {
             "Access-Control-Allow-Credentials": "*",
             "Access-Control-Allow-Methods": "GET, PUT, DELETE",

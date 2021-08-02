@@ -59,17 +59,18 @@ exports.createCalculatorHandler = async (event) => {
 
     const responseBody = {
         id: idCreate,
-        result: body.result
+        result: result
     };
 
     const response = {
         statusCode: 201,
-        body: responseBody,
+        body: JSON.stringify(responseBody),
         headers: {
             "Access-Control-Allow-Credentials": "*",
             "Access-Control-Allow-Methods": "POST",
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "content-type"
+            "Access-Control-Allow-Headers": "content-type",
+            "Content-Type": "application/json"
         } 
     };
 
