@@ -88,7 +88,8 @@ exports.getCalculatorByIdHandler = async (event) => {
             "Access-Control-Allow-Credentials": "*",
             "Access-Control-Allow-Methods": "GET, PUT, DELETE",
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "content-type"
+            "Access-Control-Allow-Headers": "content-type",
+            "Content-Type": "application/json"
         } 
     };
 

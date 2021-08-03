@@ -2,7 +2,7 @@
 
 cd "$( dirname ${BASH_SOURCE[0]})"
 
-#sam build
+sam build
 
 if [ $# -lt 1 ]; then
     echo "Running sam local start-api with default parameters."

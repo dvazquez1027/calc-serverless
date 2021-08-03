@@ -51,6 +51,13 @@ describe('Test createCalculatorHandler', () => {
         const expectedResult = {
             statusCode: 201,
             body: event.body,
+            headers: {
+                "Access-Control-Allow-Credentials": "*",
+                "Access-Control-Allow-Methods": "POST",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "content-type",
+                "Content-Type": "application/json"                
+            }
         };
 
         // Compare the result with the expected result
