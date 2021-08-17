@@ -1,0 +1,10 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: calc-serverless-runner
+spec:
+  replicas: 2
+  template:
+    spec:
+      repository: dvazquez1027/calc-serverless
+      env: []
