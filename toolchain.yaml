@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  AppId:
+    Description: Application ID
+    Type: String
+  AppResourceArns:
+    Description: Resource ARNs in Serverless App
+    Type: CommaDelimitedList
+    Default: '*'
+
+Resources:
+  PermissionsBoundaryPolicy:
+    Description: Creating an IAM managed policy for defining the permissions boundary for an AWS Lambda App
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: IAM policy to define the permissions boundary for IAM entities created in an AWS Lambda App
+      ManagedPolicyName:
+        Fn::Sub: ${AppId}-${AWS::Region}-PermissionsBoundary
+      PolicyDocument:
+        Statement:
+        - Action:
+          - '*'
+          Effect: Allow
+          Resource:
+            Ref: AppResourceArns
+          Sid: StackResources
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:DescribeLogGroups
+          - logs:PutLogEvents
+          - xray:Put*
+          Effect: Allow
+          Resource: '*'
+          Sid: StaticPermissions
+        - Action: '*'
+          Effect: Allow
+          Resource: '*'
+          Condition:
+            StringEquals:
+              aws:RequestTag/aws:cloudformation:stack-name:
+              - Ref: AppId
+            ForAllValues:StringEquals:
+              aws:TagKeys: aws:cloudformation:stack-name
+          Sid: StackResourcesTagging
+        Version: '2012-10-17'
+
+Outputs:
+  PermissionsBoundaryPolicyId:
+    Description: ARN of the PermissionBoundary
+    Value: !Ref PermissionsBoundaryPolicy
+    Export: 
+      Name: !Sub ${AppId}-PermissionsBoundaryPolicyId
+  
