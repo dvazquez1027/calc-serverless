@@ -24,10 +24,6 @@ Globals:
 Parameters:
   AppId:
     Type: String
-  AppResourceArns:
-    Description: Resource ARNs in Serverless App
-    Type: CommaDelimitedList
-    Default: ''
     
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
